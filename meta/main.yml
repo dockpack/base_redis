@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: dockpack.base_redis
+  author: bbaassssiiee
+  description: Redis for RedHat using SCL
+  company: dockpack
+  license: MIT
+  min_ansible_version: 2.8
+  platforms:
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags:
+    - database
+    - development
+    - redis
+    - cache
+    - performance
