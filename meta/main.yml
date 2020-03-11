@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: dockpack.base_redis
+  role_name: base_redis
   author: bbaassssiiee
   description: Redis for RedHat using SCL
   company: dockpack
