@@ -1,0 +1,63 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  vars_files:
+    ../../defaults/main.yml
+
+  tasks:
+    - name: Remove goss test
+      file:
+        path: /tmp/test_redis.yml
+        state: absent
+
+    - name: Stop Redis
+      systemd:
+        name: "rh-redis5-redis"
+        state: stopped
+
+    - name: Close redis-server ports in firewalld
+      firewalld:
+        port: "6379/tcp"
+        permanent: true
+        immediate: true
+        state: disabled
+
+    - name: Close redis-sentinel ports in firewalld
+      firewalld:
+        port: "26379/tcp"
+        permanent: true
+        immediate: true
+        state: disabled
+
+    - name: Remove Redis configuration files
+      file:
+        path: "/etc/opt/rh/rh-redis5/{{ item }}"
+        state: absent
+      with_items:
+        - redis.conf
+        - redis-sentinel.conf
+
+    - name: Remove Redis from remote
+      yum:
+        state: absent
+        name: " rh-redis5"
+
+    - name: Reset max connections in kernel to default
+      sysctl:
+        name: net.core.somaxconn
+        value: '128'
+        state: present
+        reload: true
+      tags:
+        - kernel
+
+    - name: Reset vm.overcommit_memory to default
+      sysctl:
+        name: vm.overcommit_memory
+        value: '0'
+        state: present
+        reload: true
+      tags:
+        - kernel

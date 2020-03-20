@@ -54,3 +54,4 @@
         msg: "Goss failed to validate"
       when: item.rc != 0
       with_items: "{{ test_results.results }}"
+      no_log: true
