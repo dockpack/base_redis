@@ -2,4 +2,11 @@
 # handlers file for base_redis
 
 - name: restart redis
-  service: "name={{ redis_daemon }} state=restarted"
+  systemd:
+    name: "{{ redis_daemon }}"
+    state: restarted
+
+- name: restart sentinel
+  systemd:
+    name: "{{ sentinel_daemon }}"
+    state: restarted
