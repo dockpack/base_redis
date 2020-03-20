@@ -19,20 +19,6 @@
         name: "rh-redis5-redis"
         state: stopped
 
-    - name: Close redis-server ports in firewalld
-      firewalld:
-        port: "6379/tcp"
-        permanent: true
-        immediate: true
-        state: disabled
-
-    - name: Close redis-sentinel ports in firewalld
-      firewalld:
-        port: "26379/tcp"
-        permanent: true
-        immediate: true
-        state: disabled
-
     - name: Remove Redis configuration files
       file:
         path: "/etc/opt/rh/rh-redis5/{{ item }}"
