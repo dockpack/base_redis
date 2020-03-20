@@ -1,41 +1,24 @@
 ---
-# tasks file for base_redis
-- name: Define redis_package.
-  set_fact:
-    redis_package: "{{ __redis_package }}"
-  when: redis_package is not defined
 
-- name: Install Centos software collections
-  package:
-    name: centos-release-scl-rh
-    state: present
-  register: network_access
-  until: network_access is success
-  retries: 3
-  delay: 2
-  when: ansible_distribution == 'CentOS'
+- include: tuning.yml
+  when:
+    - redis_server is defined
+    - redis_server|bool
+  tags:
+    - tuning
 
-- name: Enable RHEL software collections
-  # yamllint disable-line rule:line-length
-  command: "yum-config-manager --enable rhel-server-rhscl-{{ ansible_distribution_major_version }}-rpms"
-  when: ansible_distribution == 'RedHat'
+- include: install.yml
+  tags:
+    - install
 
-- name: Ensure Redis is installed.
-  package:
-    name: "{{ redis_package }}"
-    state: present
+- include: server.yml
+  when:
+    - redis_server is defined
+    - redis_server|bool
+  tags:
+    - config
 
-- name: Ensure Redis is configured.
-  template:
-    src: redis.conf.j2
-    dest: "{{ redis_conf_path }}"
-    owner: redis
-    group: root
-    mode: 0640
-  notify: restart redis
-
-- name: Ensure Redis is running and enabled on boot.
-  service:
-    name: "{{ redis_daemon }}"
-    state: started
-    enabled: true
+- include: sentinel.yml
+  when: redis_sentinel is defined
+  tags:
+    - config
