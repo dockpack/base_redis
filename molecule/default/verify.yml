@@ -26,6 +26,12 @@
       until: download_goss is succeeded
       retries: 3
 
+    - name: Ensure goss_test_directory is present
+      file:
+        path: "{{ goss_test_directory }}"
+        state: directory
+        mode: 0755
+
     - name: Copy Goss tests to remote
       copy:
         src: "{{ item }}"
