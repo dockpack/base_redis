@@ -61,11 +61,6 @@ Example Playbook
   become: true
   vars:
     redis_sentinel: true
-    redis_sentinel_monitors:
-      - name: mymaster
-        host: "{{ groups.redis_master[0] }}"
-        port: "{{ redis_port }}"
-        quorum: 2
   roles:
     - {role: install-redis, tags: sentinel}
 ```
