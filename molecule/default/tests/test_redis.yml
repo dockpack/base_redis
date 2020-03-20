@@ -1,12 +1,13 @@
 ---
+command:
+  /opt/rh/rh-redis5/root/usr/bin/redis-cli info:
+    exit-status: 0
+    stdout:
+      - executable:/opt/rh/rh-redis5/root/usr/bin/redis-server
+      - config_file:/etc/opt/rh/rh-redis5/redis.conf
+    stderr: []
+    timeout: 10000
 file:
-  /etc/opt/rh/rh-redis5/redis-sentinel.conf:
-    exists: true
-    mode: "0640"
-    owner: redis
-    group: root
-    filetype: file
-    contains: []
   /etc/opt/rh/rh-redis5/redis.conf:
     exists: true
     mode: "0640"
@@ -48,8 +49,6 @@ service:
 user:
   redis:
     exists: true
-    uid: 999
-    gid: 997
     groups:
       - redis
     home: /var/opt/rh/rh-redis5/lib/redis
@@ -57,7 +56,11 @@ user:
 group:
   redis:
     exists: true
-    gid: 997
 process:
   redis-server:
     running: true
+# Kernel
+net.core.somaxconn:
+  value: "65535"
+vm.overcommit_memory:
+  value: "1"

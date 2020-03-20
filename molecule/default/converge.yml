@@ -1,5 +1,8 @@
 ---
 - name: Converge
   hosts: all
+  become: true
+  vars:
+    redis_server: true
   roles:
     - role: base_redis
