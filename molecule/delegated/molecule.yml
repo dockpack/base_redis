@@ -42,7 +42,7 @@ scenario:
   test_sequence:
     # - prepare
     - converge
-    #- idempotence
+    # - idempotence
     # - side_effect
     - verify
     - cleanup
