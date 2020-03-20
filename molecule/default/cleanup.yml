@@ -5,11 +5,13 @@
 
   vars_files:
     ../../defaults/main.yml
+  vars:
+    goss_test_directory: /etc/goss.d
 
   tasks:
     - name: Remove goss test
       file:
-        path: /tmp/test_redis.yml
+        path: "{{ goss_test_directory}}/test_redis.yml"
         state: absent
 
     - name: Stop Redis
