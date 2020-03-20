@@ -1,0 +1,48 @@
+---
+# Persistent test machines
+driver:
+  name: delegated
+  options:
+    managed: false
+    login_cmd_template: 'ssh {instance}'
+    ansible_connection_options:
+      connection: ssh
+verifier:
+  name: goss
+  lint:
+    name: yamllint
+platforms:
+  - name: server1
+    groups:
+      - redis_master
+      - redis_sentinel
+  - name: server2
+    groups:
+      - redis_slave
+      - redis_sentinel
+  - name: server3
+    groups:
+      - redis_slave
+      - redis_sentinel
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      remote_tmp: ./tmp
+      stdout_callback: yaml
+  playbooks:
+    cleanup: cleanup.yml
+    converge: converge.yml
+  options:
+    v: false
+  lint:
+    name: ansible-lint
+scenario:
+  name: delegated
+  test_sequence:
+    # - prepare
+    - converge
+    #- idempotence
+    # - side_effect
+    - verify
+    - cleanup
