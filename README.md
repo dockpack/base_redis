@@ -1,5 +1,5 @@
-base_redis
-==========
+install-redis
+=============
 
 Redis on Centos/RHEL 7
 
@@ -16,12 +16,60 @@ See defaults/main.yml
 Dependencies
 ------------
 
+In your inventory define hosts like:
+
+```
+[redis_master]
+node0.example.com
+
+[redis_slave]
+node1.example.com
+node2.example.com
+
+[redis_sentinel]
+node0.example.com
+node1.example.com
+node2.example.com
+
+```
 Example Playbook
 ----------------
 
-    - hosts: redis
-      roles:
-         - { role: base_redis  }
+```
+---
+# Install Redis Sentinel on 3 RHEL7 VMs
+
+- name: Install Redis master
+  hosts: redis_master
+  become: true
+  vars:
+    redis_server: true
+  roles:
+    - {role: install-redis, tags: master}
+
+- name: Install Redis slaves
+  hosts: redis_slave
+  become: true
+  vars:
+    redis_server: true
+    redis_slaveof: "{{ master_ip }} {{ redis_port }}"
+  roles:
+    - {role: install-redis, tags: slave}
+
+- name: Configure Redis sentinel nodes
+  hosts: redis_sentinel
+  become: true
+  vars:
+    redis_sentinel: true
+    redis_sentinel_monitors:
+      - name: mymaster
+        host: "{{ groups.redis_master[0] }}"
+        port: "{{ redis_port }}"
+        quorum: 2
+  roles:
+    - {role: install-redis, tags: sentinel}
+```
+
 
 License
 -------

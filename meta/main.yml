@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: base_redis
   author: bbaassssiiee
-  description: Redis for RedHat using SCL
+  description: Redis Sentinel for RedHat using SCL
   company: dockpack
   license: MIT
   min_ansible_version: 2.8
