@@ -1,4 +1,4 @@
 .tox
 .vagrant
-,bash_history
+.bash_history
 .cache
