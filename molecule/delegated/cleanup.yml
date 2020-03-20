@@ -5,6 +5,7 @@
 
   vars_files:
     ../../defaults/main.yml
+
   vars:
     goss_test_directory: /etc/goss.d
 
@@ -18,6 +19,20 @@
       systemd:
         name: "rh-redis5-redis"
         state: stopped
+
+    - name: Close redis-server ports in firewalld
+      firewalld:
+        port: "6379/tcp"
+        permanent: true
+        immediate: true
+        state: disabled
+
+    - name: Close redis-sentinel ports in firewalld
+      firewalld:
+        port: "26379/tcp"
+        permanent: true
+        immediate: true
+        state: disabled
 
     - name: Remove Redis configuration files
       file:

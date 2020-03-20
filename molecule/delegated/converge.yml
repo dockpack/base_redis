@@ -1,0 +1,25 @@
+---
+- name: Install Redis master
+  hosts: redis_master
+  become: true
+  vars:
+    redis_server: true
+  roles:
+    - {role: base_redis, tags: master}
+
+- name: Install Redis slaves
+  hosts: redis_slave
+  become: true
+  vars:
+    redis_server: true
+    redis_slaveof: "{{ master_ip }} {{ redis_port }}"
+  roles:
+    - {role: base_redis, tags: slave}
+
+- name: Configure Redis sentinel nodes
+  hosts: redis_sentinel
+  become: true
+  vars:
+    redis_sentinel: true
+  roles:
+    - {role: base_redis, tags: sentinel}
