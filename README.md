@@ -1,4 +1,4 @@
-install-redis
+base_redis
 =============
 
 Redis on Centos/RHEL 7
@@ -45,7 +45,7 @@ Example Playbook
   vars:
     redis_server: true
   roles:
-    - {role: install-redis, tags: master}
+    - {role: base_redis, tags: master}
 
 - name: Install Redis slaves
   hosts: redis_slave
@@ -54,7 +54,7 @@ Example Playbook
     redis_server: true
     redis_slaveof: "{{ master_ip }} {{ redis_port }}"
   roles:
-    - {role: install-redis, tags: slave}
+    - {role: base_redis, tags: slave}
 
 - name: Configure Redis sentinel nodes
   hosts: redis_sentinel
@@ -62,7 +62,7 @@ Example Playbook
   vars:
     redis_sentinel: true
   roles:
-    - {role: install-redis, tags: sentinel}
+    - {role: base_redis, tags: sentinel}
 ```
 
 
