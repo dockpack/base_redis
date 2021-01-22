@@ -23,5 +23,7 @@
   become: true
   vars:
     redis_sentinel: true
-  roles:
-    - {role: base_redis, tags: sentinel}
+#  roles:
+#    - {role: base_redis, tags: sentinel}
+  tasks:
+    - name: sentinel rewrites its own config file, so not idempotent.
