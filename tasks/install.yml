@@ -24,6 +24,7 @@
 - name: Ensure Redis is installed.
   package:
     name: "{{ redis_package }}"
+    update_cache: true
     state: present
 
 - name: Ensure firewalld is running.
