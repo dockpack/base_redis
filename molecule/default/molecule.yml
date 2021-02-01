@@ -8,25 +8,104 @@ lint: |
   yamllint .
   ansible-lint
 platforms:
-  - name: base-redis1-centos7
+  - name: base_redis1_centos7
     image: milcom/centos7-systemd
     privileged: true
     groups:
       - redis_master
       - redis_sentinel
-  - name: base-redis2-centos7
+    docker_networks:
+      - name: 'redis'
+        ipam_config:
+          - subnet: '10.16.0.0/24'
+    networks:
+      - name: "redis"
+        ipv4_address: '10.16.0.10'
+  - name: base_redis2_centos7
     image: milcom/centos7-systemd
     privileged: true
     groups:
       - redis_slave
       - redis_sentinel
-  - name: base-redis3-centos7
+    docker_networks:
+      - name: 'redis'
+        ipam_config:
+          - subnet: '10.16.0.0/24'
+    networks:
+      - name: "redis"
+        ipv4_address: '10.16.0.11'
+  - name: base_redis3_centos7
     image: milcom/centos7-systemd
     privileged: true
     groups:
       - redis_slave
       - redis_sentinel
+    docker_networks:
+      - name: 'redis'
+        ipam_config:
+          - subnet: '10.16.0.0/24'
+    networks:
+      - name: "redis"
+        ipv4_address: '10.16.0.12'
+  - name: base_redis4_centos7
+    image: milcom/centos7-systemd
+    privileged: true
+    groups:
+      - redis_slave
+      - redis_sentinel
+    docker_networks:
+      - name: 'redis'
+        ipam_config:
+          - subnet: '10.16.0.0/24'
+    networks:
+      - name: "redis"
+        ipv4_address: '10.16.0.14'
+  - name: base_redis5_centos7
+    image: milcom/centos7-systemd
+    privileged: true
+    groups:
+      - redis_slave
+      - redis_sentinel
+    docker_networks:
+      - name: 'redis'
+        ipam_config:
+          - subnet: '10.16.0.0/24'
+    networks:
+      - name: "redis"
+        ipv4_address: '10.16.0.15'
 provisioner:
   name: ansible
+scenario:
+  create_sequence:
+    - dependency
+    - create
+    - prepare
+  check_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - create
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - dependency
+    - create
+    - converge
+  destroy_sequence:
+    - dependency
+    - cleanup
+    - destroy
+  test_sequence:
+    - dependency
+    - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - converge
+    - verify
+    - cleanup
+    - destroy
 verifier:
   name: ansible

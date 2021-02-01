@@ -1,11 +1,6 @@
 ---
 # defaults file for base_redis
 
-
-## This should be adapted for your master's NIC
-# yamllint disable-line rule:line-length
-master_ip: "{{ hostvars[groups.redis_master[0]].ansible_enp0s8.ipv4.address|default('127.0.0.1',true) }}"
-
 systemd_path: /usr/lib/systemd/system/rh-redis5-redis.service
 redis_bind: true
 redis_port: 6379

@@ -1,5 +1,8 @@
 ---
 
+- include: discover.yml
+  when: groups['redis_sentinel']|length > 0
+
 - include: tuning.yml
   when:
     - redis_server is defined
@@ -22,3 +25,8 @@
   when: redis_sentinel is defined
   tags:
     - config
+
+- include: verify.yml
+  when: redis_sentinel is defined
+  tags:
+    - verify

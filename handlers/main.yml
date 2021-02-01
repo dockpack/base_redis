@@ -10,3 +10,9 @@
   systemd:
     name: "{{ sentinel_daemon }}"
     state: restarted
+
+- name: follow the leader
+  redis:
+    command: slave
+    master_host: "{{ master_ip }}"
+    master_port: "{{ redis_port }}"

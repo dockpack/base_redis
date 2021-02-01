@@ -1,0 +1,9 @@
+---
+# yamllint disable rule:line-length
+- name: verify if another redis is running as master
+  when: magic is defined
+  shell: |
+    set -o pipefail; \
+    {{ redis_path }}/bin/redis-cli info replication|grep master_host|cut -d: -f 2
+  changed_when: false
+  register: replication_info
