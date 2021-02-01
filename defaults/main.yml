@@ -71,3 +71,5 @@ redis_disabled_commands: []
 #  - SREM
 #  - RENAME
 #  - SHUTDOWN
+
+configure_firewalld: true
