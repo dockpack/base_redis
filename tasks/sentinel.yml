@@ -27,6 +27,7 @@
   when:
     - redis_sentinel is defined
     - ansible_connection != 'docker'
+    - configure_firewalld
   firewalld:
     port: "{{ redis_sentinel_port }}/tcp"
     permanent: true

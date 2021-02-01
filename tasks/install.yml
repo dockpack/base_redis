@@ -27,7 +27,9 @@
     state: present
 
 - name: Ensure firewalld is running.
-  when: ansible_connection != 'docker'
+  when:
+    - ansible_connection != 'docker'
+    - configure_firewalld
   systemd:
     name: firewalld
     daemon-reload: true

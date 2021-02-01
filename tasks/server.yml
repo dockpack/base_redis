@@ -23,7 +23,9 @@
   notify: restart redis
 
 - name: Firewalld configuration redis-server
-  when: ansible_connection != 'docker'
+  when:
+    - ansible_connection != 'docker'
+    - configure_firewalld
   firewalld:
     port: "{{ redis_port }}/tcp"
     permanent: true
