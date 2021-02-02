@@ -1,12 +1,12 @@
 ---
-# Install Redis Sentinel on 3 instances
+# Install Redis Sentinel on redis_server instances
 # sentinel rewrites its own config file, so not idempotent.
 
 - name: Discover Redis master
-  hosts: redis_sentinel
+  hosts: redis_server
   become: true
   roles:
-    - {role: base_redis, tags: master}
+    - {role: base_redis, tags: master, slave}
 
 - name: Install Redis master
   hosts: redis_leader
@@ -17,7 +17,7 @@
     - {role: base_redis, tags: master}
 
 - name: Install Redis slaves
-  hosts: redis_slave
+  hosts: redis_server
   become: true
   vars:
     redis_server: true

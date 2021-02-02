@@ -1,6 +1,6 @@
 ---
 # defaults file for base_redis
-
+redis_server_master_index: 0
 systemd_path: /usr/lib/systemd/system/rh-redis5-redis.service
 redis_bind: true
 redis_port: 6379
