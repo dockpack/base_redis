@@ -12,7 +12,7 @@ platforms:
     image: milcom/centos7-systemd
     privileged: true
     groups:
-      - redis_master
+      - redis_server
       - redis_sentinel
     docker_networks:
       - name: 'redis'
@@ -25,7 +25,7 @@ platforms:
     image: milcom/centos7-systemd
     privileged: true
     groups:
-      - redis_slave
+      - redis_server
       - redis_sentinel
     docker_networks:
       - name: 'redis'
@@ -38,7 +38,7 @@ platforms:
     image: milcom/centos7-systemd
     privileged: true
     groups:
-      - redis_slave
+      - redis_server
       - redis_sentinel
     docker_networks:
       - name: 'redis'
@@ -51,7 +51,7 @@ platforms:
     image: milcom/centos7-systemd
     privileged: true
     groups:
-      - redis_slave
+      - redis_server
       - redis_sentinel
     docker_networks:
       - name: 'redis'
@@ -64,7 +64,7 @@ platforms:
     image: milcom/centos7-systemd
     privileged: true
     groups:
-      - redis_slave
+      - redis_server
       - redis_sentinel
     docker_networks:
       - name: 'redis'
@@ -104,6 +104,7 @@ scenario:
     - syntax
     - create
     - converge
+    - side_effect
     - verify
     - cleanup
     - destroy
