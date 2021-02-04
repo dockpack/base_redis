@@ -104,7 +104,6 @@ scenario:
     - syntax
     - create
     - converge
-    - side_effect
     - verify
     - cleanup
     - destroy
