@@ -3,9 +3,10 @@
 - name: set facts to configure redis_master
   run_once: true
   set_fact:
-    # yamllint disable-line rule:line-length
-    master_ip: "{{ hostvars[groups.redis_master[0]].ansible_default_ipv4.address }}"
-    master_hostname: "{{ hostvars[groups.redis_master[0]].inventory_hostname }}"
+    # yamllint disable rule:line-length
+    master_ip: "{{ hostvars[groups.redis_server[redis_server_master_index]].ansible_default_ipv4.address }}"
+    master_hostname: "{{ hostvars[groups.redis_server[redis_server_master_index]].inventory_hostname }}"
+    # yamllint disable rule:line-length
     redis_state: "uninstalled"
     host_list: []
     redis_hosts: []
@@ -46,20 +47,29 @@
   debug:
     msg: "redis state is: {{ redis_state }}"
 
-- name: verify if another redis is running as master
+- name: verify if redis is running as master
   when: redis_state == 'running'
+  shell: |
+    set -o pipefail; \
+    {{ redis_path }}/redis-cli info replication|grep 'role:master'
+  changed_when: false
+  failed_when: false
+  register: role_master
+
+- name: display master role_master
+  when: redis_state == 'running'
+  debug:
+    msg: "{{ inventory_hostname }}: {{ role_master.stdout }}"
+
+- name: verify if another redis is running as master
+  when:
+    - redis_state == 'running'
+    - role_master.rc != 0
   shell: |
     set -o pipefail; \
     {{ redis_path }}/redis-cli info replication|grep master_host|cut -d: -f 2
   changed_when: false
   register: replication_info
-
-- name: fail on split brain condition
-  when:
-    - replication_info.stdout_lines is defined
-    - replication_info.stdout_lines|length > 1
-  fail:
-    msg: "SPLIT BRAIN IN THE CLUSTER!"
 
 - name: set leader_ip
   when:
@@ -73,32 +83,36 @@
   debug:
     msg: "leader_ip: {{ leader_ip }}"
 
-- name: display leader hostname
+- name: set master_hostname
   set_fact:
     master_hostname: "{{ inventory_hostname }}"
   when:
-    - leader_ip is defined
-    - redis_hosts[inventory_hostname] == leader_ip
+    - master_ip == redis_hosts[ inventory_hostname ]
 
-- name: set master_ip to current leader
-  when:
-    - leader_ip is defined
-    - leader_ip != master_ip
-  set_fact:
-    master_ip: "{{ leader_ip }}"
-  notify: follow the leader
-
-- name: set slaveof
-  set_fact:
-    redis_slaveof: "{{ master_ip }} {{ redis_port }}"
-  notify: follow the leader
-
-- name: display redis_slaveof
-  when: redis_slaveof is defined
+- name: display master_hostname
+  when: master_hostname is defined
   debug:
-    msg: "redis_slaveof: {{ redis_slaveof }}"
+    msg: "master_hostname: {{ master_hostname }}"
+
+- name: set master_ip from master_hostname
+  when:
+    - master_ip == redis_hosts[ inventory_hostname ]
+    - redis_state == 'running'
+  set_fact:
+    master_ip: "{{ redis_hosts[ master_hostname ] }}"
 
 - name: add master_hostname as redis_leader
   add_host:
     name: "{{ master_hostname }}"
     groups: redis_leader
+
+- name: set redis_slaveof
+  when: inventory_hostname != master_hostname
+  set_fact:
+    redis_slaveof: "{{ master_ip }} {{ redis_port }}"
+
+- name: display redis_slaveof
+  when:
+    - redis_slaveof is defined
+  debug:
+    msg: "redis_slaveof: {{ redis_slaveof }}"
