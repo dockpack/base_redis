@@ -39,8 +39,14 @@ Example Playbook
 ---
 # Install Redis Sentinel on 3 RHEL7 VMs
 
+- name: Discover Redis master
+  hosts: redis_server
+  become: true
+  roles:
+    - {role: base_redis, tags: master, slave}
+
 - name: Install Redis master
-  hosts: redis_master
+  hosts: redis_leader
   become: true
   vars:
     redis_server: true
@@ -48,11 +54,10 @@ Example Playbook
     - {role: base_redis, tags: master}
 
 - name: Install Redis slaves
-  hosts: redis_slave
+  hosts: redis_server
   become: true
   vars:
     redis_server: true
-    redis_slaveof: "{{ master_ip }} {{ redis_port }}"
   roles:
     - {role: base_redis, tags: slave}
 
@@ -63,9 +68,10 @@ Example Playbook
     redis_sentinel: true
     redis_sentinel_monitors:
       - name: mymaster
-        host: "{{ groups.redis_master[0] }}"
-        port: 6379
-        quorum: 2
+        # host: "{{ groups.redis_master[0] }}"
+        host: "{{ master_hostname }}"
+        port: "{{ redis_host }}"
+        quorum: "{{ groups.redis_server|length -1 }}"
   roles:
     - {role: base_redis, tags: sentinel}
 ```
