@@ -33,6 +33,10 @@ redis_user: redis
 redis_group: root
 
 # Set to an empty set to disable persistence (saving the DB to disk).
+# For example, this configuration will make Redis automatically dump the dataset to disk 
+# every 900 seconds if at least 1 key changes:
+# every 300 seconds if at least 10 keys changed:
+# every 60 seconds if at least 10000 keys changed:
 redis_save:
   - 900 1
   - 300 10
