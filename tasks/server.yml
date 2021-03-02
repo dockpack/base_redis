@@ -1,6 +1,15 @@
 ---
 # tasks file for base_redis
 
+- name: Ensure Redis is configurable.
+  file:
+    path: "{{ redis_conf_path }}"
+    state: directory
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: 0755
+    setype: redis_var_lib_t
+
 - name: Ensure Redis is configured.
   template:
     src: "{{ item }}.j2"
