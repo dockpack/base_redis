@@ -70,3 +70,7 @@ maxmemory-samples {{ redis_maxmemory_samples }}
 appendonly {{ redis_appendonly }}
 appendfsync {{ redis_appendfsync }}
 no-appendfsync-on-rewrite no
+
+# high-volume replication no-limits
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit replica 0 0 0
