@@ -1,12 +1,13 @@
 base_redis
 =============
 
-Redis on Centos/RHEL 7
+Ansible-role to install Redis5 Sentinel on Centos/RHEL 7 (using Satellite).
+This role has been developed to cater analytics of a high-volume website with Matomo. We use Redis hosts with 65Gb to cache the event queues before processing into MariaDB.
 
 Requirements
 ------------
 
-Yum with Software Collections.
+Yum with Software Collections, this role has been developed for on-prem use.
 
 Role Variables
 --------------
