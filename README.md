@@ -2,7 +2,7 @@ base_redis
 =============
 
 Ansible-role to install Redis5 Sentinel on Centos/RHEL 7 (using Satellite).
-This role has been developed to cater analytics of a high-volume website with Matomo. We use Redis hosts with 65Gb to cache the event queues before processing into MariaDB.
+This role has been developed to cater analytics of a high-volume website with Matomo. We use Redis hosts with 64Gb to cache the event queues before processing into MariaDB.
 
 Requirements
 ------------
